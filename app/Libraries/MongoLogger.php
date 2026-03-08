@@ -15,3 +15,4 @@ class MongoLogger
         $collection->insertOne($data);
     }
 }
+   
