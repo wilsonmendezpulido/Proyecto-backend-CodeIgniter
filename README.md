@@ -1,63 +1,203 @@
-# CodeIgniter 4 Application Starter
+# 🛒 Sistema de Gestión de Productos - CodeIgniter 4 + SQL + MongoDB
 
-## What is CodeIgniter?
+Este proyecto es una aplicación web desarrollada con **CodeIgniter 4** que permite gestionar productos mediante un **CRUD completo** (crear, listar, editar y eliminar).
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](http://codeigniter.com).
+El sistema implementa una **arquitectura híbrida de almacenamiento**, utilizando:
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+- **MySQL (SQL)** para persistencia relacional.
+- **MongoDB (NoSQL)** para almacenamiento adicional y búsquedas rápidas.
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+---
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+# 📚 Tecnologías utilizadas
 
-## Installation & updates
+- PHP 8+
+- CodeIgniter 4
+- MySQL
+- MongoDB
+- Composer
+- HTML5 + CSS3
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+---
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+# 🧱 Arquitectura de CodeIgniter 4
 
-## Setup
+CodeIgniter 4 utiliza el patrón de arquitectura **MVC (Model - View - Controller)**.
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+### 1-Controllers
 
-## Important Change with index.php
+Los controladores gestionan la lógica de la aplicación y reciben las solicitudes HTTP.
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+Ejemplo:
+app/Controllers/Productos.php
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
 
-**Please** read the user guide for a better explanation of how CI4 works!
+Responsabilidades:
 
-## Repository Management
+- Obtener datos del modelo
+- Procesar formularios
+- Enviar datos a las vistas
 
-We use Github issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+Ejemplo:
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+```php
+public function index()
+{
+    $data['productos'] = $this->productoModel->findAll();
+    return view('productos/index', $data);
+}
 
-## Server Requirements
+### 2-Models
 
-PHP version 7.2 or higher is required, with the following extensions installed:
+Los modelos se encargan de interactuar con las bases de datos.
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+Este proyecto utiliza dos modelos:
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+Modelo SQL
+app/Models/ProductoModel.php
 
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+Este modelo usa MySQL para almacenar los productos.
+
+Funciones principales:
+insert()
+update()
+delete()
+findAll()
+
+Modelo NoSQL
+app/Models/ProductoMongoModel.php
+
+Este modelo se conecta a MongoDB usando la librería oficial:
+
+mongodb/mongodb
+
+Funciones:
+
+insertar()
+actualizar()
+eliminar()
+buscar()
+
+MongoDB se utiliza principalmente para:
+Búsquedas rápidas
+Copia de datos para consultas
+
+3️⃣ Views
+
+Las vistas muestran la interfaz del sistema.
+
+Ubicación:
+app/Views/productos/
+
+Principales vistas:
+
+index.php     -> catálogo de productos
+crear.php     -> formulario de creación
+editar.php    -> formulario de edición
+
+También se usa un layout global:
+
+app/Views/layouts/main.php
+
+capturas:
+![alt text](image.png)
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
+![alt text](image-5.png)
+![alt text](image-6.png)
+
+⚙️ Instalación del Proyecto
+
+Esta sección explica cómo instalar y ejecutar el proyecto Proyecto-backend-CodeIgniter en un entorno local.
+
+1. Clonar el repositorio
+Primero se debe clonar el repositorio desde GitHub.
+git clone https://github.com/wilsonmendezpulido/Proyecto-backend-CodeIgniter.git
+Luego ingresar a la carpeta del proyecto:
+cd Proyecto-backend-CodeIgniter
+
+2. Instalar dependencias
+
+El proyecto utiliza Composer para gestionar dependencias de PHP.
+Ejecutar:
+composer install
+
+Esto instalará todas las librerías necesarias definidas en:
+composer.json
+
+Entre ellas:
+CodeIgniter 4
+Librerías de soporte del framework
+Cliente de MongoDB
+
+3. Configurar el archivo .env
+
+Copiar el archivo de ejemplo:
+cp env .env
+
+Luego editar el archivo .env y configurar el entorno:
+CI_ENVIRONMENT = development
+
+4. Configurar conexión a MySQL
+
+Dentro del archivo .env configurar la base de datos relacional:
+
+database.default.hostname = localhost
+database.default.database = tienda
+database.default.username = root
+database.default.password = password
+database.default.DBDriver = MySQLi
+
+5. Crear la base de datos MySQL
+
+Crear la base de datos:
+CREATE DATABASE tienda;
+
+Crear la tabla de productos:
+
+CREATE TABLE productos (
+id INT AUTO_INCREMENT PRIMARY KEY,
+nombre VARCHAR(255),
+descripcion TEXT,
+precio DECIMAL(10,2),
+stock INT
+);
+
+6. Configurar MongoDB
+
+El proyecto también utiliza MongoDB para almacenamiento NoSQL y búsquedas.
+
+Agregar en el archivo .env:
+
+mongo.uri = mongodb://localhost:27017
+mongo.database = tienda
+
+MongoDB creará automáticamente la base de datos cuando se inserte el primer documento.
+
+Ejemplo de documento en MongoDB:
+
+{
+ "sql_id": 1,
+ "nombre": "Laptop",
+ "descripcion": "Lenovo",
+ "precio": 2500000,
+ "stock": 5
+}
+
+7. Ejecutar el servidor
+
+CodeIgniter 4 incluye un servidor local de desarrollo.
+
+Ejecutar:
+
+php spark serve
+
+El sistema quedará disponible en:
+
+http://localhost:8080
+
+Para acceder al módulo de productos:
+
+http://localhost:8080/productos

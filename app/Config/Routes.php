@@ -32,7 +32,7 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'Home::index');
+$routes->get('/', 'Productos::index');
 
 /*
  * --------------------------------------------------------------------
@@ -54,7 +54,9 @@ if (file_exists(APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php'))
 
 
 //tienda
-$routes->get('/productos', 'ProductController::index');
-$routes->get('/productos/create', 'ProductController::create');
-$routes->post('/productos/store', 'ProductController::store');
-$routes->get('/productos/delete/(:num)', 'ProductController::delete/$1');
+$routes->get('productos', 'Productos::index');
+$routes->get('productos/crear', 'Productos::crear');
+$routes->post('productos/guardar', 'Productos::guardar');
+$routes->get('productos/editar/(:num)', 'Productos::editar/$1');
+$routes->post('productos/actualizar/(:num)', 'Productos::actualizar/$1');
+$routes->get('productos/eliminar/(:num)', 'Productos::eliminar/$1');
